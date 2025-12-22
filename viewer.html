@@ -7,8 +7,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -60,9 +58,9 @@
         .download-area { background: #f8f9fa; padding: 20px; border-top: 1px solid #eee; margin-bottom: 15px; }
         .download-label { display: block; margin-bottom: 10px; font-weight: bold; color: #7f8c8d; font-size: 12px; }
         
+        /* Tombol Download Style */
         .btn-dl { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; width: 100%; box-sizing: border-box; cursor: pointer; border: none; color: white; transition: transform 0.2s; }
         .btn-dl:hover { transform: translateY(-2px); opacity: 0.9; }
-        
         .btn-excel { background: #217346; box-shadow: 0 4px 10px rgba(33, 115, 70, 0.3); }
 
         /* LOADER */
@@ -136,10 +134,10 @@
 
     <div class="footer" id="footer-section" style="display: none;">
         <div class="download-area">
-            <span class="download-label">REKAPITULASI DATA (ALL)</span>
+            <span class="download-label">FILE MASTER</span>
             <div style="display: block;">
-                <button onclick="downloadExcel()" class="btn-dl btn-excel">
-                    <i class="fas fa-file-excel"></i> Download Excel (.xlsx)
+                <button onclick="downloadOriginal()" class="btn-dl btn-excel">
+                    <i class="fas fa-file-excel"></i> Download File Asli Spreadsheet
                 </button>
             </div>
         </div>
@@ -151,14 +149,17 @@
 </div>
 
 <script>
-    // --- KONFIGURASI URL ---
-    const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
+    // ==========================================================
+    // BAGIAN PENTING: ISI ID SPREADSHEET DI BAWAH INI
+    // ==========================================================
+    // Contoh ID: 1eX... (ambil dari URL saat Anda mengedit Spreadsheet)
+    const SPREADSHEET_ID = "1k9_gUaKfCplkcq8rzlCcJ6jug6-2CoGGt88PQ4iYxDw"; 
+    
+    // URL CSV untuk dibaca oleh Aplikasi (Tetap pakai yang 2PACX ini)
+    const GOOGLE_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
 
     const urlParams = new URLSearchParams(window.location.search);
     const targetID = urlParams.get('id');
-    
-    // Variabel Global untuk menyimpan data agar bisa didownload
-    let globalData = [];
 
     function init() {
         if (!targetID) {
@@ -166,18 +167,17 @@
             return;
         }
 
-        const finalUrl = GOOGLE_SHEET_URL + "&t=" + new Date().getTime();
+        const finalUrl = GOOGLE_SHEET_CSV + "&t=" + new Date().getTime();
 
         Papa.parse(finalUrl, {
             download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
-                globalData = results.data; // Simpan semua data
-                
+                const data = results.data;
                 const rowNumber = parseInt(targetID); 
                 const arrayIndex = rowNumber - 2;
 
-                if (!isNaN(arrayIndex) && globalData[arrayIndex]) {
-                    renderData(globalData[arrayIndex]);
+                if (!isNaN(arrayIndex) && data[arrayIndex]) {
+                    renderData(data[arrayIndex]);
                     document.getElementById('footer-section').style.display = 'block'; 
                 } else {
                     showError("Data Tidak Ditemukan", `Data untuk baris ke-<b>${targetID}</b> tidak ditemukan.`);
@@ -270,18 +270,18 @@
         }
     }
 
-    // --- FUNGSI DOWNLOAD EXCEL (.XLSX) YANG RAPI ---
-    function downloadExcel() {
-        if (!globalData || globalData.length === 0) { alert("Data belum dimuat."); return; }
+    // --- FUNGSI DOWNLOAD FILE ASLI ---
+    function downloadOriginal() {
+        if (SPREADSHEET_ID === "1k9_gUaKfCplkcq8rzlCcJ6jug6-2CoGGt88PQ4iYxDw" || SPREADSHEET_ID === "") {
+            alert("Harap isi SPREADSHEET_ID di dalam kode HTML terlebih dahulu!");
+            return;
+        }
         
-        // Buat Worksheet dari Data JSON
-        var ws = XLSX.utils.json_to_sheet(globalData);
-        // Buat Workbook Baru
-        var wb = XLSX.utils.book_new();
-        // Masukkan Worksheet ke Workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data APAR");
-        // Simpan sebagai file Excel asli
-        XLSX.writeFile(wb, "Laporan_APAR_Lengkap.xlsx");
+        // URL Magic untuk Export langsung ke Excel (.xlsx)
+        const downloadUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=xlsx`;
+        
+        // Buka di tab baru (langsung trigger download)
+        window.open(downloadUrl, '_blank');
     }
 
     function showError(title, msg) {
