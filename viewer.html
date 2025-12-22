@@ -7,6 +7,8 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
@@ -114,6 +116,7 @@
             <span class="info-label">Berat</span>
             <span class="info-val" id="display-weight">...</span>
         </div>
+        
         <div class="info-group">
             <span class="info-label">Lokasi</span>
             <span class="info-val" id="display-loc">...</span>
@@ -171,7 +174,6 @@
             return;
         }
 
-        // ANTI CACHE: Tambahkan timestamp agar data selalu baru
         const finalUrl = GOOGLE_SHEET_URL + "&t=" + new Date().getTime();
 
         Papa.parse(finalUrl, {
@@ -179,13 +181,12 @@
             complete: function(results) {
                 globalData = results.data; // Simpan semua data
                 
-                // LOGIKA: Index = ID - 2
                 const rowNumber = parseInt(targetID); 
                 const arrayIndex = rowNumber - 2;
 
                 if (!isNaN(arrayIndex) && globalData[arrayIndex]) {
                     renderData(globalData[arrayIndex]);
-                    document.getElementById('footer-section').style.display = 'block'; // Tampilkan Footer
+                    document.getElementById('footer-section').style.display = 'block'; 
                 } else {
                     showError("Data Tidak Ditemukan", `Data untuk baris ke-<b>${targetID}</b> tidak ditemukan.`);
                 }
@@ -201,19 +202,15 @@
         document.getElementById('loader').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
 
-        // 1. INFO DASAR (Termasuk Jenis & Berat)
+        // Info Dasar
         document.getElementById('display-no').innerText = row['NOMOR APAR'] || "-";
-        
-        // --- DATA JENIS & BERAT DIPERTAHANKAN ---
         document.getElementById('display-type').innerText = row['JENIS APAR'] || "-";
         document.getElementById('display-weight').innerText = row['BERAT APAR'] || "-";
-        // ----------------------------------------
-        
         document.getElementById('display-loc').innerText = row['LOKASI APAR'] || "-";
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
         document.getElementById('display-time').innerText = row['Timestamp'] || "-";
 
-        // 2. Button Edit
+        // Button Edit
         const editUrl = row['Link Edit Respon']; 
         const editBtn = document.getElementById('display-edit-link');
         if (editUrl && editUrl.startsWith('http')) {
@@ -221,11 +218,11 @@
             editBtn.style.display = 'inline-flex';
         }
 
-        // 3. Catatan
+        // Catatan
         const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
         document.getElementById('display-note').innerText = noteText;
 
-        // 4. Checklist & Logika Kadaluarsa
+        // Checklist
         const checkItems = [
             { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
@@ -243,7 +240,6 @@
             let isBad = false;
             let displayText = item.val || "N/A";
 
-            // LOGIKA KADALUARSA
             if (item.label === "Kadaluarsa") {
                 if (valClean === "BAIK") {
                     displayText = "KADALUARSA";
@@ -282,19 +278,21 @@
         }
     }
 
-    // --- FUNGSI DOWNLOAD (Menggunakan globalData) ---
+    // --- FUNGSI DOWNLOAD EXCEL (.XLSX) YANG RAPI ---
     function downloadExcel() {
         if (!globalData || globalData.length === 0) { alert("Data belum dimuat."); return; }
         
-        var csv = Papa.unparse(globalData);
-        var csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        var csvUrl = URL.createObjectURL(csvData);
-        var link = document.createElement('a');
-        link.href = csvUrl;
-        link.setAttribute('download', 'Data_APAR_Lengkap.csv');
-        link.click();
+        // Buat Worksheet dari Data JSON
+        var ws = XLSX.utils.json_to_sheet(globalData);
+        // Buat Workbook Baru
+        var wb = XLSX.utils.book_new();
+        // Masukkan Worksheet ke Workbook
+        XLSX.utils.book_append_sheet(wb, ws, "Data APAR");
+        // Simpan sebagai file Excel asli
+        XLSX.writeFile(wb, "Laporan_APAR_Lengkap.xlsx");
     }
 
+    // --- FUNGSI DOWNLOAD PDF ---
     function downloadPDF() {
         if (!globalData || globalData.length === 0) { alert("Data belum dimuat."); return; }
 
