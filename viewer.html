@@ -12,28 +12,18 @@
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background-color: #f4f6f8; 
-            margin: 0; 
-            padding: 0; 
-            color: #333; 
+            margin: 0; padding: 0; color: #333; 
         }
         .container { 
-            max-width: 480px; 
-            margin: 0 auto; 
-            min-height: 100vh; 
-            background: white; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
-            display: flex;
-            flex-direction: column;
+            max-width: 480px; margin: 0 auto; min-height: 100vh; 
+            background: white; box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            display: flex; flex-direction: column;
         }
 
         /* HEADER */
         .header { 
-            background: #2c3e50; 
-            color: white; 
-            padding: 25px 20px; 
-            text-align: center; 
-            border-bottom-left-radius: 25px; 
-            border-bottom-right-radius: 25px; 
+            background: #2c3e50; color: white; padding: 25px 20px; 
+            text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
@@ -44,14 +34,9 @@
 
         /* STATUS CARD */
         .status-card { 
-            text-align: center; 
-            padding: 25px 15px; 
-            border-radius: 15px; 
-            margin-bottom: 25px; 
-            color: white; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            position: relative;
-            overflow: hidden;
+            text-align: center; padding: 25px 15px; border-radius: 15px; 
+            margin-bottom: 25px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: relative; overflow: hidden;
         }
         .bg-ok { background: linear-gradient(135deg, #27ae60, #2ecc71); }
         .bg-warn { background: linear-gradient(135deg, #c0392b, #e74c3c); }
@@ -62,11 +47,8 @@
 
         /* NOTE BOX */
         .note-box { 
-            background: #fff8e1; 
-            border-left: 5px solid #ffca28; 
-            padding: 15px; 
-            border-radius: 6px; 
-            margin-bottom: 25px;
+            background: #fff8e1; border-left: 5px solid #ffca28; 
+            padding: 15px; border-radius: 6px; margin-bottom: 25px;
         }
         .note-title { 
             font-size: 11px; font-weight: bold; color: #f57f17; 
@@ -164,15 +146,12 @@
 
 <script>
     // --- KONFIGURASI URL ---
-    // Pastikan URL ini sesuai dengan Link CSV Google Sheet Anda
     const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
     const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
 
-    // Ambil Parameter ID dari URL (?id=...)
     const urlParams = new URLSearchParams(window.location.search);
     const targetID = urlParams.get('id');
 
-    // --- FUNGSI UTAMA ---
     function init() {
         if (!targetID) {
             showError("QR Code Tidak Valid", "Tidak ditemukan ID APAR pada link ini.");
@@ -180,12 +159,9 @@
         }
 
         Papa.parse(PROXY_URL, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
+            download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
-                // Cari Data yang NOMOR APAR-nya sama dengan ID
                 const found = data.find(row => row['NOMOR APAR'] && row['NOMOR APAR'].trim() === targetID.trim());
 
                 if (found) {
@@ -204,40 +180,48 @@
         document.getElementById('loader').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
 
-        // 1. Isi Info Dasar
+        // 1. Info Dasar
         document.getElementById('display-no').innerText = row['NOMOR APAR'];
         document.getElementById('display-loc').innerText = row['LOKASI APAR'];
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
         document.getElementById('display-time').innerText = row['Timestamp'];
 
-        // 2. Isi Catatan (Hanya Teks, Tidak Pengaruhi Status)
+        // 2. Catatan
         const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
         document.getElementById('display-note').innerText = noteText;
 
-        // 3. Logika Checklist
-        // Daftar kolom yang harus dicek (BAIK / TIDAK)
+        // 3. Logic Checklist
         const checkItems = [
             { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
             { label: "Selang", val: row['ITEM CHECK [SELANG ]'] },
             { label: "Fisik Tabung", val: row['ITEM CHECK [KONDISI FISIK]'] },
             { label: "Handle / Tuas", val: row['ITEM CHECK [HANDLE]'] },
-            { label: "Masa Berlaku", val: row['ITEM CHECK [KADALUARSA]'] }
+            { label: "Masa Berlaku", val: row['ITEM CHECK [KADALUARSA]'] } // Item Spesial
         ];
 
         let hasProblem = false;
         let htmlList = "";
 
         checkItems.forEach(item => {
-            // Bersihkan teks, ubah ke huruf besar
             const valClean = String(item.val || "").toUpperCase().trim();
-            
-            // Tentukan status item: Jika "TIDAK", maka BAD.
-            const isBad = (valClean === "TIDAK");
+            let isBad = false;
+
+            // --- LOGIKA SPESIAL ---
+            if (item.label === "Masa Berlaku") {
+                // Khusus Masa Berlaku:
+                // Jika "TIDAK" (Tidak Kadaluarsa) => BAGUS/HIJAU
+                // Jika "BAIK" (atau YA) => JELEK/MERAH
+                isBad = (valClean !== "TIDAK"); 
+            } else {
+                // Item Lain (Tekanan, Selang, dll):
+                // Jika "TIDAK" => JELEK/MERAH
+                // Jika "BAIK" => BAGUS/HIJAU
+                isBad = (valClean === "TIDAK");
+            }
             
             if(isBad) hasProblem = true;
 
-            // Buat baris tabel HTML
             htmlList += `
                 <tr>
                     <td class="check-item">${item.label}</td>
@@ -253,19 +237,17 @@
 
         document.getElementById('checklist-body').innerHTML = htmlList;
 
-        // 4. Tentukan Warna Status Utama (Card Paling Atas)
+        // 4. Status Utama
         const statusCard = document.getElementById('status-card');
         
         if (hasProblem) {
-            // MERAH: Jika ada item yg TIDAK
             statusCard.className = "status-card bg-warn";
             statusCard.innerHTML = `
                 <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
                 <div class="status-text">PERLU PERHATIAN</div>
-                <div class="status-sub">Ditemukan item kondisi TIDAK BAIK</div>
+                <div class="status-sub">Ditemukan item kondisi TIDAK BAIK / KADALUARSA</div>
             `;
         } else {
-            // HIJAU: Jika semua BAIK
             statusCard.className = "status-card bg-ok";
             statusCard.innerHTML = `
                 <div class="status-icon"><i class="fas fa-shield-alt"></i></div>
@@ -283,7 +265,6 @@
         `;
     }
 
-    // Jalankan fungsi init saat halaman selesai dimuat
     window.onload = init;
 </script>
 
