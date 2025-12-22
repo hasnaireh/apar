@@ -4,24 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KONTROL APAR</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        /* CSS tetap menggunakan desain sebelumnya */
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
-        .container { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-        .header { background: #2c3e50; color: white; padding: 25px; text-align: center; border-radius: 0 0 25px 25px; }
-        .content { padding: 25px; flex: 1; }
-        .status-card { text-align: center; padding: 25px; border-radius: 15px; margin-bottom: 25px; color: white; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f4f6f8; 
+            margin: 0; padding: 0; color: #333; 
+        }
+        .container { 
+            max-width: 480px; margin: 0 auto; min-height: 100vh; 
+            background: white; box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            display: flex; flex-direction: column;
+        }
+
+        /* HEADER */
+        .header { 
+            background: #2c3e50; color: white; padding: 25px 20px; 
+            text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0; opacity: 0.8; font-size: 12px; }
+
+        /* CONTENT */
+        .content { padding: 25px 20px; flex: 1; }
+
+        /* STATUS CARD */
+        .status-card { 
+            text-align: center; padding: 25px 15px; border-radius: 15px; 
+            margin-bottom: 25px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: relative; overflow: hidden;
+        }
         .bg-ok { background: linear-gradient(135deg, #27ae60, #2ecc71); }
         .bg-warn { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+        
+        .status-icon { font-size: 42px; margin-bottom: 10px; }
+        .status-text { font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .status-sub { font-size: 13px; margin-top: 5px; opacity: 0.9; font-weight: 400; }
+
+        /* NOTE BOX */
+        .note-box { 
+            background: #fff8e1; border-left: 5px solid #ffca28; 
+            padding: 15px; border-radius: 6px; margin-bottom: 25px;
+        }
+        .note-title { 
+            font-size: 11px; font-weight: bold; color: #f57f17; 
+            text-transform: uppercase; display: block; margin-bottom: 5px;
+        }
+        .note-content { font-size: 14px; color: #5d4037; line-height: 1.5; }
+
+        /* INFO LIST */
         .info-group { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-        .info-label { font-size: 12px; color: #95a5a6; font-weight: bold; }
-        .info-val { font-size: 15px; font-weight: 600; color: #2c3e50; }
-        .btn-edit-form { display: block; background: #f39c12; color: white; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin: 20px 0; }
-        .badge { font-size: 11px; padding: 4px 12px; border-radius: 20px; color: white; }
-        .b-ok { background: #2e7d32; }
-        .b-bad { background: #c62828; }
+        .info-label { font-size: 12px; color: #95a5a6; font-weight: 700; text-transform: uppercase; }
+        .info-val { font-size: 15px; font-weight: 600; color: #2c3e50; text-align: right; }
+
+        /* CHECKLIST TABLE */
+        .section-title { 
+            margin-top: 30px; margin-bottom: 15px; 
+            font-size: 14px; color: #34495e; font-weight: 700; 
+            border-bottom: 2px solid #eee; padding-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .check-table { width: 100%; border-collapse: collapse; }
+        .check-table td { padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+        .check-item { font-size: 14px; color: #555; font-weight: 500; }
+        .check-res { text-align: right; }
+        
+        .badge { 
+            font-size: 11px; padding: 4px 12px; border-radius: 20px; 
+            font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .b-ok { background: #e8f5e9; color: #2e7d32; }
+        .b-bad { background: #ffebee; color: #c62828; }
+
+        /* TOMBOL EDIT */
+        .edit-container {
+            margin: 30px 0 10px;
+            text-align: center;
+        }
+        .btn-edit-form {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f39c12;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-edit-form:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        .btn-edit-form i { font-size: 16px; }
+
+        /* LOADER */
+        #loader { text-align: center; padding-top: 50%; display: block; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* FOOTER */
+        .footer { text-align: center; font-size: 11px; color: #b0bec5; padding: 20px; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -29,88 +124,195 @@
 <div class="container">
     <div class="header">
         <h1>KONTROL APAR</h1>
-        <p>Detail Inspeksi Berdasarkan Baris</p>
+        <p>Sistem Monitoring APAR Online</p>
     </div>
 
-    <div id="main-content" class="content">
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="color:#7f8c8d; font-size:14px;">Memuat data terbaru...</div>
+    </div>
+
+    <div id="main-content" class="content" style="display: none;">
+        
         <div id="status-card"></div>
 
-        <a id="display-edit-link" href="#" target="_blank" class="btn-edit-form">
-            <i class="fas fa-edit"></i> UPDATE DATA INI
-        </a>
+        <div class="edit-container">
+            <a id="display-edit-link" href="#" target="_blank" class="btn-edit-form" style="display: none;">
+                <i class="fas fa-edit"></i> UPDATE / EDIT DATA INI
+            </a>
+        </div>
+
+        <div class="note-box">
+            <span class="note-title"><i class="fas fa-sticky-note"></i> Catatan Inspektor</span>
+            <span id="display-note" class="note-content">-</span>
+        </div>
 
         <div class="info-group">
             <span class="info-label">Nomor APAR</span>
-            <span class="info-val" id="display-no"></span>
+            <span class="info-val" id="display-no">...</span>
         </div>
         <div class="info-group">
             <span class="info-label">Lokasi</span>
-            <span class="info-val" id="display-loc"></span>
+            <span class="info-val" id="display-loc">...</span>
         </div>
         <div class="info-group">
-            <span class="info-label">Timestamp</span>
-            <span class="info-val" id="display-time"></span>
+            <span class="info-label">Inspektor</span>
+            <span class="info-val" id="display-inspector">...</span>
         </div>
 
-        <h3 style="font-size:14px; margin-top:20px;">HASIL CEK:</h3>
-        <div id="checklist-container"></div>
+        <div class="section-title">
+            <i class="fas fa-clipboard-check" style="color:#3498db"></i> HASIL CEK FISIK
+        </div>
+        
+        <table class="check-table">
+            <tbody id="checklist-body"></tbody>
+        </table>
+
+        <div style="margin-top:20px; text-align:right; font-size:12px; color:#999;">
+            Data diupdate: <span id="display-time" style="color:#333; font-weight:bold">-</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Asset Management System<br>
+        Data terhubung Real-time ke Google Sheets
     </div>
 </div>
 
 <script>
+    // --- KONFIGURASI URL ---
     const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
     const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetRow = urlParams.get('id');
 
-    window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetID = urlParams.get('id'); // ID ini adalah Nomor Baris (Ex: 2, 3, 4...)
+
+    function init() {
+        if (!targetID) {
+            showError("QR Code Tidak Valid", "Tidak ditemukan ID pada link ini.");
+            return;
+        }
+
         Papa.parse(PROXY_URL, {
-            download: true, header: false, skipEmptyLines: true,
+            download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
-                const rowIndex = parseInt(targetRow) - 1; 
+                
+                // LOGIKA BARU (PERBAIKAN):
+                // ID dari QR code adalah nomor baris spreadsheet (mulai dari 2).
+                // Array data dimulai dari 0.
+                // Jadi, Index Array = ID - 2.
+                
+                const rowNumber = parseInt(targetID); // Ubah string "2" jadi angka 2
+                const arrayIndex = rowNumber - 2;
 
-                if (data[rowIndex]) {
-                    const row = data[rowIndex];
-                    // Mapping Manual berdasarkan Urutan Kolom di CSV 
-                    const mapped = {
-                        no: row[5], loc: row[4], time: row[0],
-                        tekanan: row[8], pin: row[9], selang: row[10], fisik: row[11],
-                        catatan: row[14], edit: row[16]
-                    };
-                    renderData(mapped);
+                // Cek apakah rowIndex valid dan datanya ada
+                if (!isNaN(arrayIndex) && data[arrayIndex]) {
+                    renderData(data[arrayIndex]);
+                } else {
+                    showError("Data Tidak Ditemukan", `Data untuk baris ke-<b>${targetID}</b> tidak ditemukan atau kosong.`);
                 }
+            },
+            error: function() {
+                showError("Gagal Koneksi", "Tidak dapat mengambil data. Periksa internet Anda.");
             }
         });
-    };
+    }
 
-    function renderData(data) {
-        document.getElementById('display-no').innerText = data.no;
-        document.getElementById('display-loc').innerText = data.loc;
-        document.getElementById('display-time').innerText = data.time;
-        document.getElementById('display-edit-link').href = data.edit;
+    function renderData(row) {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
 
-        const checks = [
-            { l: "Tekanan", v: data.tekanan },
-            { l: "Pin/Segel", v: data.pin },
-            { l: "Selang", v: data.selang },
-            { l: "Fisik", v: data.fisik }
+        // 1. Info Dasar 
+        document.getElementById('display-no').innerText = row['NOMOR APAR'] || "-";
+        document.getElementById('display-loc').innerText = row['LOKASI APAR'] || "-";
+        document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
+        document.getElementById('display-time').innerText = row['Timestamp'] || "-";
+
+        // 2. Tampilkan Tombol Edit (Link dari kolom 'Link Edit Respon') 
+        const editUrl = row['Link Edit Respon']; 
+        const editBtn = document.getElementById('display-edit-link');
+        if (editUrl && editUrl.startsWith('http')) {
+            editBtn.href = editUrl;
+            editBtn.style.display = 'inline-flex';
+        }
+
+        // 3. Catatan 
+        const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
+        document.getElementById('display-note').innerText = noteText;
+
+        // 4. Logic Checklist (Berdasarkan nama kolom di CSV) 
+        const checkItems = [
+            { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
+            { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
+            { label: "Selang", val: row['ITEM CHECK [SELANG ]'] },
+            { label: "Fisik Tabung", val: row['ITEM CHECK [KONDISI FISIK]'] },
+            { label: "Handle / Tuas", val: row['ITEM CHECK [HANDLE]'] },
+            { label: "Kadaluarsa", val: row['ITEM CHECK [KADALUARSA]'] }
         ];
 
         let hasProblem = false;
-        let html = "";
-        checks.forEach(c => {
-            const isBad = (c.v === "TIDAK");
-            if(isBad) hasProblem = true;
-            html += `<div class="info-group"><span>${c.l}</span><span class="badge ${isBad ? 'b-bad' : 'b-ok'}">${c.v}</span></div>`;
-        });
-        document.getElementById('checklist-container').innerHTML = html;
+        let htmlList = "";
 
-        const card = document.getElementById('status-card');
-        card.className = "status-card " + (hasProblem ? "bg-warn" : "bg-ok");
-        card.innerHTML = `<h2>${hasProblem ? "PERLU PERHATIAN" : "KONDISI AMAN"}</h2>`;
+        checkItems.forEach(item => {
+            const valClean = String(item.val || "").toUpperCase().trim();
+            let isBad = false;
+
+            // Logika Penentuan Status Baik/Buruk 
+            if (item.label === "Kadaluarsa") {
+                // Kadaluarsa dianggap buruk jika nilainya BUKAN "TIDAK"
+                isBad = (valClean !== "TIDAK"); 
+            } else {
+                // Item lain dianggap buruk jika nilainya adalah "TIDAK"
+                isBad = (valClean === "TIDAK");
+            }
+            
+            if(isBad) hasProblem = true;
+
+            htmlList += `
+                <tr>
+                    <td class="check-item">${item.label}</td>
+                    <td class="check-res">
+                        <span class="badge ${isBad ? 'b-bad' : 'b-ok'}">
+                            ${item.val || "N/A"} 
+                            <i class="fas ${isBad ? 'fa-times' : 'fa-check'}" style="margin-left:5px"></i>
+                        </span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('checklist-body').innerHTML = htmlList;
+
+        // 5. Status Utama Visual 
+        const statusCard = document.getElementById('status-card');
+        if (hasProblem) {
+            statusCard.className = "status-card bg-warn";
+            statusCard.innerHTML = `
+                <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="status-text">PERLU PERHATIAN</div>
+                <div class="status-sub">Ditemukan item kondisi TIDAK BAIK / KADALUARSA</div>
+            `;
+        } else {
+            statusCard.className = "status-card bg-ok";
+            statusCard.innerHTML = `
+                <div class="status-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="status-text">KONDISI AMAN</div>
+                <div class="status-sub">APAR Siap Digunakan</div>
+            `;
+        }
     }
+
+    function showError(title, msg) {
+        document.getElementById('loader').innerHTML = `
+            <div style="color:#e74c3c; font-size:40px; margin-bottom:15px;"><i class="fas fa-times-circle"></i></div>
+            <h3 style="margin:0; color:#333;">${title}</h3>
+            <p style="color:#777; margin-top:10px; font-size:14px;">${msg}</p>
+        `;
+    }
+
+    window.onload = init;
 </script>
+
 </body>
 </html>
