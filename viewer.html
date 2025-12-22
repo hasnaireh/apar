@@ -138,7 +138,6 @@
             },
             error: function(err) {
                 console.error(err);
-                // Pesan error lebih jelas
                 showError("Gagal Koneksi", "Gagal mengambil data langsung dari Google. Coba gunakan versi Proxy.");
             }
         });
@@ -178,11 +177,28 @@
         checkItems.forEach(item => {
             const valClean = String(item.val || "").toUpperCase().trim();
             let isBad = false;
+            let displayText = item.val || "N/A"; // Variabel baru untuk menampung teks yang akan ditampilkan
+
+            // === MODIFIKASI DIMULAI DARI SINI ===
             if (item.label === "Kadaluarsa") {
-                isBad = (valClean !== "TIDAK"); 
+                // Khusus item Kadaluarsa: 
+                // Jika inputnya "BAIK", kita ubah teks jadi "KADALUARSA" dan tandai sebagai BAD
+                if (valClean === "BAIK") {
+                    displayText = "KADALUARSA";
+                    isBad = true;
+                } 
+                // Jika inputnya bukan "TIDAK" (dan bukan "BAIK" yang sudah dihandle diatas), berarti juga BAD
+                else if (valClean !== "TIDAK") {
+                    isBad = true;
+                }
+                // Jika inputnya "TIDAK", berarti AMAN (isBad = false)
             } else {
+                // Untuk item lain (Tekanan, Selang, dll):
+                // Jika input "TIDAK", berarti Rusak/Bad
                 isBad = (valClean === "TIDAK");
             }
+            // === MODIFIKASI SELESAI ===
+            
             if(isBad) hasProblem = true;
 
             htmlList += `
@@ -190,7 +206,7 @@
                     <td class="check-item">${item.label}</td>
                     <td class="check-res">
                         <span class="badge ${isBad ? 'b-bad' : 'b-ok'}">
-                            ${item.val || "N/A"} 
+                            ${displayText} 
                             <i class="fas ${isBad ? 'fa-times' : 'fa-check'}" style="margin-left:5px"></i>
                         </span>
                     </td>
