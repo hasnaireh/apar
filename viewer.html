@@ -224,7 +224,7 @@
         document.getElementById('display-time').innerText = row['Timestamp'];
 
         // 2. Tampilkan Tombol Edit jika ada link di kolom EditLink
-        const editUrl = row['EditLink']; 
+        const editUrl = row['Link Edit Respon']; 
         const editBtn = document.getElementById('display-edit-link');
         if (editUrl && editUrl.startsWith('http')) {
             editBtn.href = editUrl;
@@ -307,3 +307,4 @@
 
 </body>
 </html>
+
