@@ -150,12 +150,11 @@
 
 <script>
     // ==========================================================
-    // BAGIAN PENTING: ISI ID SPREADSHEET DI BAWAH INI
+    // ID SPREADSHEET SUDAH DIMASUKKAN DI SINI:
     // ==========================================================
-    // Contoh ID: 1eX... (ambil dari URL saat Anda mengedit Spreadsheet)
     const SPREADSHEET_ID = "1k9_gUaKfCplkcq8rzlCcJ6jug6-2CoGGt88PQ4iYxDw"; 
     
-    // URL CSV untuk dibaca oleh Aplikasi (Tetap pakai yang 2PACX ini)
+    // URL CSV untuk dibaca oleh Aplikasi (Tetap pakai yang 2PACX)
     const GOOGLE_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -272,7 +271,7 @@
 
     // --- FUNGSI DOWNLOAD FILE ASLI ---
     function downloadOriginal() {
-        if (SPREADSHEET_ID === "1k9_gUaKfCplkcq8rzlCcJ6jug6-2CoGGt88PQ4iYxDw" || SPREADSHEET_ID === "") {
+        if (SPREADSHEET_ID === "" || SPREADSHEET_ID === "MASUKAN_ID_SPREADSHEET_DISINI") {
             alert("Harap isi SPREADSHEET_ID di dalam kode HTML terlebih dahulu!");
             return;
         }
