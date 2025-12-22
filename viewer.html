@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* CSS SAMA SEPERTI SEBELUMNYA - TIDAK ADA PERUBAHAN TAMPILAN */
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background-color: #f4f6f8; 
@@ -19,8 +20,6 @@
             background: white; box-shadow: 0 0 20px rgba(0,0,0,0.05); 
             display: flex; flex-direction: column;
         }
-
-        /* HEADER */
         .header { 
             background: #2c3e50; color: white; padding: 25px 20px; 
             text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; 
@@ -28,11 +27,7 @@
         }
         .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
         .header p { margin: 5px 0 0; opacity: 0.8; font-size: 12px; }
-
-        /* CONTENT */
         .content { padding: 25px 20px; flex: 1; }
-
-        /* STATUS CARD */
         .status-card { 
             text-align: center; padding: 25px 15px; border-radius: 15px; 
             margin-bottom: 25px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
@@ -40,12 +35,9 @@
         }
         .bg-ok { background: linear-gradient(135deg, #27ae60, #2ecc71); }
         .bg-warn { background: linear-gradient(135deg, #c0392b, #e74c3c); }
-        
         .status-icon { font-size: 42px; margin-bottom: 10px; }
         .status-text { font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .status-sub { font-size: 13px; margin-top: 5px; opacity: 0.9; font-weight: 400; }
-
-        /* NOTE BOX */
         .note-box { 
             background: #fff8e1; border-left: 5px solid #ffca28; 
             padding: 15px; border-radius: 6px; margin-bottom: 25px;
@@ -55,67 +47,41 @@
             text-transform: uppercase; display: block; margin-bottom: 5px;
         }
         .note-content { font-size: 14px; color: #5d4037; line-height: 1.5; }
-
-        /* INFO LIST */
         .info-group { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
         .info-label { font-size: 12px; color: #95a5a6; font-weight: 700; text-transform: uppercase; }
         .info-val { font-size: 15px; font-weight: 600; color: #2c3e50; text-align: right; }
-
-        /* CHECKLIST TABLE */
         .section-title { 
             margin-top: 30px; margin-bottom: 15px; 
             font-size: 14px; color: #34495e; font-weight: 700; 
             border-bottom: 2px solid #eee; padding-bottom: 8px;
             display: flex; align-items: center; gap: 8px;
         }
-
         .check-table { width: 100%; border-collapse: collapse; }
         .check-table td { padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
         .check-item { font-size: 14px; color: #555; font-weight: 500; }
         .check-res { text-align: right; }
-        
         .badge { 
             font-size: 11px; padding: 4px 12px; border-radius: 20px; 
             font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
         }
         .b-ok { background: #e8f5e9; color: #2e7d32; }
         .b-bad { background: #ffebee; color: #c62828; }
-
-        /* TOMBOL EDIT */
-        .edit-container {
-            margin: 30px 0 10px;
-            text-align: center;
-        }
+        .edit-container { margin: 30px 0 10px; text-align: center; }
         .btn-edit-form {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: #f39c12;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background: #f39c12; color: white; padding: 15px 30px;
+            border-radius: 12px; text-decoration: none; font-weight: 700;
+            font-size: 14px; width: 100%; box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3); transition: all 0.3s ease;
         }
         .btn-edit-form:hover {
-            background: #e67e22;
-            transform: translateY(-2px);
+            background: #e67e22; transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
         }
         .btn-edit-form i { font-size: 16px; }
-
-        /* LOADER */
         #loader { text-align: center; padding-top: 50%; display: block; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* FOOTER */
         .footer { text-align: center; font-size: 11px; color: #b0bec5; padding: 20px; margin-top: auto; }
     </style>
 </head>
@@ -182,10 +148,13 @@
 <script>
     // --- KONFIGURASI URL ---
     const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
+    
+    // Perbaikan: Menambahkan parameter acak (&t=...) agar browser TIDAK menyimpan cache
+    // Ini memaksa browser mengambil data baru setiap kali halaman dibuka
     const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
 
     const urlParams = new URLSearchParams(window.location.search);
-    const targetID = urlParams.get('id'); // ID ini adalah Nomor Baris (Ex: 2, 3, 4...)
+    const targetID = urlParams.get('id'); // ID = Nomor Baris (2, 3, 4...)
 
     function init() {
         if (!targetID) {
@@ -193,24 +162,25 @@
             return;
         }
 
-        Papa.parse(PROXY_URL, {
+        // TEKNIK ANTI-CACHE:
+        // Menambahkan timestamp unik detik ini ke URL
+        const cacheBuster = "&t=" + new Date().getTime(); 
+        const finalUrl = PROXY_URL + cacheBuster;
+
+        Papa.parse(finalUrl, {
             download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
                 
-                // LOGIKA BARU (PERBAIKAN):
-                // ID dari QR code adalah nomor baris spreadsheet (mulai dari 2).
-                // Array data dimulai dari 0.
-                // Jadi, Index Array = ID - 2.
-                
-                const rowNumber = parseInt(targetID); // Ubah string "2" jadi angka 2
+                // Logika: ID QR = Nomor Baris Spreadsheet
+                // Index Array = Nomor Baris - 2 (karena Header & index mulai 0)
+                const rowNumber = parseInt(targetID); 
                 const arrayIndex = rowNumber - 2;
 
-                // Cek apakah rowIndex valid dan datanya ada
                 if (!isNaN(arrayIndex) && data[arrayIndex]) {
                     renderData(data[arrayIndex]);
                 } else {
-                    showError("Data Tidak Ditemukan", `Data untuk baris ke-<b>${targetID}</b> tidak ditemukan atau kosong.`);
+                    showError("Data Tidak Ditemukan", `Data untuk baris ke-<b>${targetID}</b> tidak ditemukan. Mungkin baris telah dihapus.`);
                 }
             },
             error: function() {
@@ -229,7 +199,7 @@
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
         document.getElementById('display-time').innerText = row['Timestamp'] || "-";
 
-        // 2. Tampilkan Tombol Edit (Link dari kolom 'Link Edit Respon') 
+        // 2. Tombol Edit
         const editUrl = row['Link Edit Respon']; 
         const editBtn = document.getElementById('display-edit-link');
         if (editUrl && editUrl.startsWith('http')) {
@@ -241,7 +211,7 @@
         const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
         document.getElementById('display-note').innerText = noteText;
 
-        // 4. Logic Checklist (Berdasarkan nama kolom di CSV) 
+        // 4. Checklist
         const checkItems = [
             { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
@@ -257,13 +227,11 @@
         checkItems.forEach(item => {
             const valClean = String(item.val || "").toUpperCase().trim();
             let isBad = false;
-
-            // Logika Penentuan Status Baik/Buruk 
+            
+            // Cek kondisi Buruk
             if (item.label === "Kadaluarsa") {
-                // Kadaluarsa dianggap buruk jika nilainya BUKAN "TIDAK"
                 isBad = (valClean !== "TIDAK"); 
             } else {
-                // Item lain dianggap buruk jika nilainya adalah "TIDAK"
                 isBad = (valClean === "TIDAK");
             }
             
@@ -284,7 +252,7 @@
 
         document.getElementById('checklist-body').innerHTML = htmlList;
 
-        // 5. Status Utama Visual 
+        // 5. Status Utama
         const statusCard = document.getElementById('status-card');
         if (hasProblem) {
             statusCard.className = "status-card bg-warn";
