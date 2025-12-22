@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistem Cek APAR KONTROL</title>
+    <title>KONTROL APAR</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -11,50 +11,101 @@
     <style>
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #f0f2f5; margin: 0; padding: 0; color: #333;
+            background-color: #f4f6f8; 
+            margin: 0; 
+            padding: 0; 
+            color: #333; 
         }
-        .container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: white; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
-        
-        /* Header */
-        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .header h1 { margin: 0; font-size: 22px; }
-        .header p { margin: 5px 0 0; opacity: 0.8; font-size: 13px; }
+        .container { 
+            max-width: 480px; 
+            margin: 0 auto; 
+            min-height: 100vh; 
+            background: white; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* Content Area */
-        .content { padding: 20px; }
-        
-        /* Status Card */
-        .status-card { 
-            text-align: center; padding: 20px; border-radius: 12px; margin-bottom: 20px; color: white;
+        /* HEADER */
+        .header { 
+            background: #2c3e50; 
+            color: white; 
+            padding: 25px 20px; 
+            text-align: center; 
+            border-bottom-left-radius: 25px; 
+            border-bottom-right-radius: 25px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0; opacity: 0.8; font-size: 12px; }
+
+        /* CONTENT */
+        .content { padding: 25px 20px; flex: 1; }
+
+        /* STATUS CARD */
+        .status-card { 
+            text-align: center; 
+            padding: 25px 15px; 
+            border-radius: 15px; 
+            margin-bottom: 25px; 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
         .bg-ok { background: linear-gradient(135deg, #27ae60, #2ecc71); }
-        .bg-warn { background: linear-gradient(135deg, #e67e22, #f1c40f); }
-        .bg-error { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+        .bg-warn { background: linear-gradient(135deg, #c0392b, #e74c3c); }
         
-        .status-icon { font-size: 40px; margin-bottom: 10px; }
-        .status-text { font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .status-icon { font-size: 42px; margin-bottom: 10px; }
+        .status-text { font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .status-sub { font-size: 13px; margin-top: 5px; opacity: 0.9; font-weight: 400; }
+
+        /* NOTE BOX */
+        .note-box { 
+            background: #fff8e1; 
+            border-left: 5px solid #ffca28; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin-bottom: 25px;
+        }
+        .note-title { 
+            font-size: 11px; font-weight: bold; color: #f57f17; 
+            text-transform: uppercase; display: block; margin-bottom: 5px;
+        }
+        .note-content { font-size: 14px; color: #5d4037; line-height: 1.5; }
+
+        /* INFO LIST */
+        .info-group { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-label { font-size: 12px; color: #95a5a6; font-weight: 700; text-transform: uppercase; }
+        .info-val { font-size: 15px; font-weight: 600; color: #2c3e50; text-align: right; }
+
+        /* CHECKLIST TABLE */
+        .section-title { 
+            margin-top: 30px; margin-bottom: 15px; 
+            font-size: 14px; color: #34495e; font-weight: 700; 
+            border-bottom: 2px solid #eee; padding-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .check-table { width: 100%; border-collapse: collapse; }
+        .check-table td { padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+        .check-item { font-size: 14px; color: #555; font-weight: 500; }
+        .check-res { text-align: right; }
         
-        /* Info Grid */
-        .info-group { margin-bottom: 20px; }
-        .info-label { font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
-        .info-value { font-size: 16px; font-weight: 500; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .badge { 
+            font-size: 11px; padding: 4px 12px; border-radius: 20px; 
+            font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .b-ok { background: #e8f5e9; color: #2e7d32; }
+        .b-bad { background: #ffebee; color: #c62828; }
 
-        /* Checklist Table */
-        .check-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .check-table td { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-        .check-table tr:last-child td { border-bottom: none; }
-        .check-item { font-weight: 500; color: #555; }
-        .check-val { text-align: right; font-weight: 600; }
-        .val-ok { color: #27ae60; }
-        .val-bad { color: #e74c3c; }
-
-        /* Loading & Error */
-        #loader { text-align: center; padding: 50px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        /* LOADER */
+        #loader { text-align: center; padding-top: 50%; display: block; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .footer { text-align: center; font-size: 11px; color: #aaa; padding: 20px; margin-top: 20px; border-top: 1px solid #eee; }
+
+        /* FOOTER */
+        .footer { text-align: center; font-size: 11px; color: #b0bec5; padding: 20px; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -62,74 +113,69 @@
 <div class="container">
     <div class="header">
         <h1>KONTROL APAR</h1>
-        <p>Sistem Pemantauan Online</p>
+        <p>Sistem Monitoring APAR Online</p>
     </div>
 
     <div id="loader">
         <div class="spinner"></div>
-        <p>Mengambil data terbaru...</p>
+        <div style="color:#7f8c8d; font-size:14px;">Memuat data terbaru...</div>
     </div>
 
-    <div id="app-content" class="content" style="display: none;">
-        <div id="status-container"></div>
-
-        <div class="info-group">
-            <div class="info-label">Nomor APAR</div>
-            <div class="info-value" id="disp-no"></div>
-        </div>
-        <div class="info-group">
-            <div class="info-label">Lokasi Penempatan</div>
-            <div class="info-value" id="disp-loc"></div>
-        </div>
+    <div id="main-content" class="content" style="display: none;">
         
-        <div style="display: flex; gap: 15px;">
-             <div class="info-group" style="flex:1;">
-                <div class="info-label">Jenis</div>
-                <div class="info-value" id="disp-type"></div>
-            </div>
-            <div class="info-group" style="flex:1;">
-                <div class="info-label">Berat</div>
-                <div class="info-value" id="disp-weight"></div>
-            </div>
+        <div id="status-card"></div>
+
+        <div class="note-box">
+            <span class="note-title"><i class="fas fa-sticky-note"></i> Catatan Inspektor</span>
+            <span id="display-note" class="note-content">-</span>
         </div>
 
-        <h3 style="margin-top:25px; font-size:16px; border-bottom:2px solid #eee; padding-bottom:10px;">
-            <i class="fas fa-clipboard-check" style="color:#3498db"></i> Detail Inspeksi
-        </h3>
+        <div class="info-group">
+            <span class="info-label">Nomor APAR</span>
+            <span class="info-val" id="display-no">...</span>
+        </div>
+        <div class="info-group">
+            <span class="info-label">Lokasi</span>
+            <span class="info-val" id="display-loc">...</span>
+        </div>
+        <div class="info-group">
+            <span class="info-label">Inspektor</span>
+            <span class="info-val" id="display-inspector">...</span>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-clipboard-check" style="color:#3498db"></i> HASIL CEK FISIK
+        </div>
         
         <table class="check-table">
             <tbody id="checklist-body"></tbody>
         </table>
 
-        <div class="info-group" style="margin-top: 25px;">
-            <div class="info-label">Catatan Tambahan</div>
-            <div class="info-value" id="disp-note" style="color:#e67e22; font-style:italic;">-</div>
-        </div>
-        
-        <div class="info-group">
-            <div class="info-label">Waktu Update Terakhir</div>
-            <div class="info-value" id="disp-time" style="font-size:13px;"></div>
+        <div style="margin-top:20px; text-align:right; font-size:12px; color:#999;">
+            Data diupdate: <span id="display-time" style="color:#333; font-weight:bold">-</span>
         </div>
     </div>
 
     <div class="footer">
-        &copy; 2025 KONTROL Facility Management<br>
-        Data terhubung langsung ke Google Sheets
+        &copy; 2025 Asset Management System<br>
+        Data terhubung Real-time ke Google Sheets
     </div>
 </div>
 
 <script>
-    // --- KONFIGURASI SUMBER DATA (SAMA DENGAN GENERATOR) ---
+    // --- KONFIGURASI URL ---
+    // Pastikan URL ini sesuai dengan Link CSV Google Sheet Anda
     const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
     const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
 
-    // Ambil ID dari URL browser
-    const params = new URLSearchParams(window.location.search);
-    const targetID = params.get('id'); // Ambil ?id=...
+    // Ambil Parameter ID dari URL (?id=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetID = urlParams.get('id');
 
+    // --- FUNGSI UTAMA ---
     function init() {
         if (!targetID) {
-            showError("QR Code tidak valid", "Tidak ditemukan ID APAR pada link ini.");
+            showError("QR Code Tidak Valid", "Tidak ditemukan ID APAR pada link ini.");
             return;
         }
 
@@ -139,58 +185,67 @@
             skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
-                const found = data.find(r => r['NOMOR APAR'] && r['NOMOR APAR'].trim() === targetID.trim());
-                
+                // Cari Data yang NOMOR APAR-nya sama dengan ID
+                const found = data.find(row => row['NOMOR APAR'] && row['NOMOR APAR'].trim() === targetID.trim());
+
                 if (found) {
-                    renderUI(found);
+                    renderData(found);
                 } else {
-                    showError("Data Tidak Ditemukan", `Nomor APAR "<b>${targetID}</b>" belum terdaftar di Spreadsheet.`);
+                    showError("Data Tidak Ditemukan", `Nomor APAR <b>${targetID}</b> belum terdaftar.`);
                 }
             },
             error: function() {
-                showError("Gagal Koneksi", "Tidak dapat mengambil data dari Google Sheets. Periksa internet Anda.");
+                showError("Gagal Koneksi", "Tidak dapat mengambil data. Periksa internet Anda.");
             }
         });
     }
 
-    function renderUI(row) {
+    function renderData(row) {
         document.getElementById('loader').style.display = 'none';
-        document.getElementById('app-content').style.display = 'block';
+        document.getElementById('main-content').style.display = 'block';
 
-        // 1. Render Informasi Dasar
-        document.getElementById('disp-no').innerText = row['NOMOR APAR'];
-        document.getElementById('disp-loc').innerText = row['LOKASI APAR'];
-        document.getElementById('disp-type').innerText = row['JENIS APAR'];
-        document.getElementById('disp-weight').innerText = row['BERAT APAR'];
-        document.getElementById('disp-note').innerText = row['CATATAN'] || "-";
-        document.getElementById('disp-time').innerText = row['Timestamp'];
+        // 1. Isi Info Dasar
+        document.getElementById('display-no').innerText = row['NOMOR APAR'];
+        document.getElementById('display-loc').innerText = row['LOKASI APAR'];
+        document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
+        document.getElementById('display-time').innerText = row['Timestamp'];
 
-        // 2. Logic Status & Checklist
+        // 2. Isi Catatan (Hanya Teks, Tidak Pengaruhi Status)
+        const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
+        document.getElementById('display-note').innerText = noteText;
+
+        // 3. Logika Checklist
+        // Daftar kolom yang harus dicek (BAIK / TIDAK)
         const checkItems = [
-            { label: "Tekanan (Pressure)", val: row['ITEM CHECK [TEKANAN APAR]'] },
+            { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
-            { label: "Kondisi Selang", val: row['ITEM CHECK [SELANG ]'] },
-            { label: "Tabung Fisik", val: row['ITEM CHECK [KONDISI FISIK]'] },
+            { label: "Selang", val: row['ITEM CHECK [SELANG ]'] },
+            { label: "Fisik Tabung", val: row['ITEM CHECK [KONDISI FISIK]'] },
             { label: "Handle / Tuas", val: row['ITEM CHECK [HANDLE]'] },
-            { label: "Kadaluarsa", val: row['ITEM CHECK [KADALUARSA]'] }
+            { label: "Masa Berlaku", val: row['ITEM CHECK [KADALUARSA]'] }
         ];
 
-        let isProblem = false;
+        let hasProblem = false;
         let htmlList = "";
 
         checkItems.forEach(item => {
-            // Deteksi masalah sederhana: jika text mengandung "rusak", "kurang", "hilang"
-            const valLower = String(item.val).toLowerCase();
-            const isBad = valLower.includes('rusak') || valLower.includes('hilang') || valLower.includes('kurang') || valLower.includes('korosi');
+            // Bersihkan teks, ubah ke huruf besar
+            const valClean = String(item.val || "").toUpperCase().trim();
             
-            if (isBad) isProblem = true;
+            // Tentukan status item: Jika "TIDAK", maka BAD.
+            const isBad = (valClean === "TIDAK");
+            
+            if(isBad) hasProblem = true;
 
+            // Buat baris tabel HTML
             htmlList += `
                 <tr>
                     <td class="check-item">${item.label}</td>
-                    <td class="check-val ${isBad ? 'val-bad' : 'val-ok'}">
-                        ${isBad ? '<i class="fas fa-times-circle"></i>' : '<i class="fas fa-check-circle"></i>'} 
-                        ${item.val}
+                    <td class="check-res">
+                        <span class="badge ${isBad ? 'b-bad' : 'b-ok'}">
+                            ${item.val} 
+                            <i class="fas ${isBad ? 'fa-times' : 'fa-check'}" style="margin-left:5px"></i>
+                        </span>
                     </td>
                 </tr>
             `;
@@ -198,28 +253,39 @@
 
         document.getElementById('checklist-body').innerHTML = htmlList;
 
-        // 3. Tentukan Warna Header Status
-        const statusContainer = document.getElementById('status-container');
-        if (isProblem) {
-            statusContainer.className = 'status-card bg-warn';
-            statusContainer.innerHTML = `<div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="status-text">Perlu Perhatian</div>`;
+        // 4. Tentukan Warna Status Utama (Card Paling Atas)
+        const statusCard = document.getElementById('status-card');
+        
+        if (hasProblem) {
+            // MERAH: Jika ada item yg TIDAK
+            statusCard.className = "status-card bg-warn";
+            statusCard.innerHTML = `
+                <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="status-text">PERLU PERHATIAN</div>
+                <div class="status-sub">Ditemukan item kondisi TIDAK BAIK</div>
+            `;
         } else {
-            statusContainer.className = 'status-card bg-ok';
-            statusContainer.innerHTML = `<div class="status-icon"><i class="fas fa-shield-alt"></i></div><div class="status-text">Kondisi Aman</div>`;
+            // HIJAU: Jika semua BAIK
+            statusCard.className = "status-card bg-ok";
+            statusCard.innerHTML = `
+                <div class="status-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="status-text">KONDISI AMAN</div>
+                <div class="status-sub">APAR Siap Digunakan</div>
+            `;
         }
     }
 
     function showError(title, msg) {
         document.getElementById('loader').innerHTML = `
-            <div style="color:#e74c3c; font-size:40px; margin-bottom:10px;"><i class="fas fa-times-circle"></i></div>
-            <h3 style="margin:0">${title}</h3>
-            <p>${msg}</p>
+            <div style="color:#e74c3c; font-size:40px; margin-bottom:15px;"><i class="fas fa-times-circle"></i></div>
+            <h3 style="margin:0; color:#333;">${title}</h3>
+            <p style="color:#777; margin-top:10px; font-size:14px;">${msg}</p>
         `;
     }
 
+    // Jalankan fungsi init saat halaman selesai dimuat
     window.onload = init;
 </script>
 
 </body>
-
 </html>
