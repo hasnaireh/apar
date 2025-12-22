@@ -77,6 +77,15 @@
             <span class="info-label">Nomor APAR</span>
             <span class="info-val" id="display-no">...</span>
         </div>
+
+        <div class="info-group">
+            <span class="info-label">Jenis APAR</span>
+            <span class="info-val" id="display-type">...</span>
+        </div>
+        <div class="info-group">
+            <span class="info-label">Berat</span>
+            <span class="info-val" id="display-weight">...</span>
+        </div>
         <div class="info-group">
             <span class="info-label">Lokasi</span>
             <span class="info-val" id="display-loc">...</span>
@@ -147,11 +156,19 @@
         document.getElementById('loader').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
 
+        // 1. Info Dasar
         document.getElementById('display-no').innerText = row['NOMOR APAR'] || "-";
+        
+        // --- DATA BARU (Pastikan nama kolom sesuai dengan Spreadsheet) ---
+        document.getElementById('display-type').innerText = row['JENIS APAR'] || "-";
+        document.getElementById('display-weight').innerText = row['BERAT APAR'] || "-";
+        // ----------------------------------------------------------------
+        
         document.getElementById('display-loc').innerText = row['LOKASI APAR'] || "-";
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
         document.getElementById('display-time').innerText = row['Timestamp'] || "-";
 
+        // 2. Edit Button
         const editUrl = row['Link Edit Respon']; 
         const editBtn = document.getElementById('display-edit-link');
         if (editUrl && editUrl.startsWith('http')) {
@@ -159,9 +176,11 @@
             editBtn.style.display = 'inline-flex';
         }
 
+        // 3. Catatan
         const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
         document.getElementById('display-note').innerText = noteText;
 
+        // 4. Checklist Items
         const checkItems = [
             { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
@@ -177,27 +196,24 @@
         checkItems.forEach(item => {
             const valClean = String(item.val || "").toUpperCase().trim();
             let isBad = false;
-            let displayText = item.val || "N/A"; // Variabel baru untuk menampung teks yang akan ditampilkan
+            let displayText = item.val || "N/A"; 
 
-            // === MODIFIKASI DIMULAI DARI SINI ===
+            // LOGIKA KHUSUS: KADALUARSA
             if (item.label === "Kadaluarsa") {
-                // Khusus item Kadaluarsa: 
-                // Jika inputnya "BAIK", kita ubah teks jadi "KADALUARSA" dan tandai sebagai BAD
                 if (valClean === "BAIK") {
+                    // Jika "BAIK", ubah jadi "KADALUARSA" & Merah
                     displayText = "KADALUARSA";
                     isBad = true;
                 } 
-                // Jika inputnya bukan "TIDAK" (dan bukan "BAIK" yang sudah dihandle diatas), berarti juga BAD
                 else if (valClean !== "TIDAK") {
+                    // Jika bukan "TIDAK", berarti Bad
                     isBad = true;
                 }
-                // Jika inputnya "TIDAK", berarti AMAN (isBad = false)
+                // Jika "TIDAK", berarti Aman (isBad false)
             } else {
-                // Untuk item lain (Tekanan, Selang, dll):
-                // Jika input "TIDAK", berarti Rusak/Bad
+                // Item lain: Jika "TIDAK" = Rusak/Bad
                 isBad = (valClean === "TIDAK");
             }
-            // === MODIFIKASI SELESAI ===
             
             if(isBad) hasProblem = true;
 
