@@ -81,6 +81,35 @@
         .b-ok { background: #e8f5e9; color: #2e7d32; }
         .b-bad { background: #ffebee; color: #c62828; }
 
+        /* TOMBOL EDIT */
+        .edit-container {
+            margin: 30px 0 10px;
+            text-align: center;
+        }
+        .btn-edit-form {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f39c12;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-edit-form:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        .btn-edit-form i { font-size: 16px; }
+
         /* LOADER */
         #loader { text-align: center; padding-top: 50%; display: block; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
@@ -106,6 +135,12 @@
     <div id="main-content" class="content" style="display: none;">
         
         <div id="status-card"></div>
+
+        <div class="edit-container">
+            <a id="display-edit-link" href="#" target="_blank" class="btn-edit-form" style="display: none;">
+                <i class="fas fa-edit"></i> UPDATE / EDIT DATA INI
+            </a>
+        </div>
 
         <div class="note-box">
             <span class="note-title"><i class="fas fa-sticky-note"></i> Catatan Inspektor</span>
@@ -146,6 +181,7 @@
 
 <script>
     // --- KONFIGURASI URL ---
+    // Pastikan Sheet sudah di-Publish ke Web sebagai CSV
     const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ed1CBEE_XALINYXAeepoKXlOKPyYLRiY35LL1OUd2wqgSbBgD2stFTG1YCjqfdCsNhc3A_PhrGE-/pub?gid=844795211&single=true&output=csv';
     const PROXY_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
 
@@ -162,6 +198,7 @@
             download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
+                // Mencari baris berdasarkan Nomor APAR 
                 const found = data.find(row => row['NOMOR APAR'] && row['NOMOR APAR'].trim() === targetID.trim());
 
                 if (found) {
@@ -180,24 +217,32 @@
         document.getElementById('loader').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
 
-        // 1. Info Dasar
+        // 1. Info Dasar 
         document.getElementById('display-no').innerText = row['NOMOR APAR'];
         document.getElementById('display-loc').innerText = row['LOKASI APAR'];
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
         document.getElementById('display-time').innerText = row['Timestamp'];
 
-        // 2. Catatan
+        // 2. Tampilkan Tombol Edit jika ada link di kolom EditLink
+        const editUrl = row['EditLink']; 
+        const editBtn = document.getElementById('display-edit-link');
+        if (editUrl && editUrl.startsWith('http')) {
+            editBtn.href = editUrl;
+            editBtn.style.display = 'inline-flex';
+        }
+
+        // 3. Catatan 
         const noteText = row['CATATAN'] ? row['CATATAN'] : "Tidak ada catatan.";
         document.getElementById('display-note').innerText = noteText;
 
-        // 3. Logic Checklist
+        // 4. Logic Checklist 
         const checkItems = [
             { label: "Tekanan", val: row['ITEM CHECK [TEKANAN APAR]'] },
             { label: "Pin / Segel", val: row['ITEM CHECK [PIN / SEGEL]'] },
             { label: "Selang", val: row['ITEM CHECK [SELANG ]'] },
             { label: "Fisik Tabung", val: row['ITEM CHECK [KONDISI FISIK]'] },
             { label: "Handle / Tuas", val: row['ITEM CHECK [HANDLE]'] },
-            { label: "Kadaluarsa", val: row['ITEM CHECK [KADALUARSA]'] } // Item Spesial
+            { label: "Kadaluarsa", val: row['ITEM CHECK [KADALUARSA]'] }
         ];
 
         let hasProblem = false;
@@ -207,16 +252,9 @@
             const valClean = String(item.val || "").toUpperCase().trim();
             let isBad = false;
 
-            // --- LOGIKA SPESIAL ---
             if (item.label === "Kadaluarsa") {
-                // Khusus Masa Berlaku:
-                // Jika "TIDAK" (Tidak Kadaluarsa) => BAGUS/HIJAU
-                // Jika "BAIK" (atau YA) => JELEK/MERAH
                 isBad = (valClean !== "TIDAK"); 
             } else {
-                // Item Lain (Tekanan, Selang, dll):
-                // Jika "TIDAK" => JELEK/MERAH
-                // Jika "BAIK" => BAGUS/HIJAU
                 isBad = (valClean === "TIDAK");
             }
             
@@ -237,9 +275,8 @@
 
         document.getElementById('checklist-body').innerHTML = htmlList;
 
-        // 4. Status Utama
+        // 5. Status Utama 
         const statusCard = document.getElementById('status-card');
-        
         if (hasProblem) {
             statusCard.className = "status-card bg-warn";
             statusCard.innerHTML = `
@@ -270,5 +307,3 @@
 
 </body>
 </html>
-
-
