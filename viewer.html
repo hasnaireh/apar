@@ -120,7 +120,11 @@
             <span class="info-label">Inspektor</span>
             <span class="info-val" id="display-inspector">...</span>
         </div>
-
+        
+        <div class="info-group">
+            <span class="info-label">Tanggal Inspeksi</span>
+            <span class="info-val" id="display-date-main">...</span>
+        </div>
         <div class="section-title">
             <i class="fas fa-clipboard-check" style="color:#3498db"></i> HASIL CEK FISIK
         </div>
@@ -204,6 +208,11 @@
         document.getElementById('display-weight').innerText = row['BERAT APAR'] || "-";
         document.getElementById('display-loc').innerText = row['LOKASI APAR'] || "-";
         document.getElementById('display-inspector').innerText = row['NAMA INSPEKTOR'] || "-";
+        
+        // --- BAGIAN BARU: MENGGUNAKAN KOLOM 'TANGGAL INSPEKSI' ---
+        document.getElementById('display-date-main').innerText = row['TANGGAL INSPEKSI'] || "-";
+        
+        // Footer tetap menggunakan Timestamp (Waktu Submit Sistem)
         document.getElementById('display-time').innerText = row['Timestamp'] || "-";
 
         // Button Edit
@@ -310,4 +319,3 @@
 
 </body>
 </html>
-
