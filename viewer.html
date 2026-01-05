@@ -125,6 +125,7 @@
             <span class="info-label">Tanggal Inspeksi</span>
             <span class="info-val" id="display-date-main">...</span>
         </div>
+
         <div class="section-title">
             <i class="fas fa-clipboard-check" style="color:#3498db"></i> HASIL CEK FISIK
         </div>
@@ -132,11 +133,8 @@
         <table class="check-table">
             <tbody id="checklist-body"></tbody>
         </table>
-
-        <div style="margin-top:20px; text-align:right; font-size:12px; color:#999;">
-            Data diupdate: <span id="display-time" style="color:#333; font-weight:bold">-</span>
+        
         </div>
-    </div>
 
     <div class="footer" id="footer-section" style="display: none;">
         <div class="download-area">
@@ -211,9 +209,6 @@
         
         // --- BAGIAN BARU: MENGGUNAKAN KOLOM 'TANGGAL INSPEKSI' ---
         document.getElementById('display-date-main').innerText = row['TANGGAL INSPEKSI'] || "-";
-        
-        // Footer tetap menggunakan Timestamp (Waktu Submit Sistem)
-        document.getElementById('display-time').innerText = row['Timestamp'] || "-";
 
         // Button Edit
         const editUrl = row['Link Edit Respon']; 
